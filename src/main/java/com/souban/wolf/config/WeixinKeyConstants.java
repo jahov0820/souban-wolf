@@ -10,7 +10,7 @@ public class WeixinKeyConstants {
 
     public final static String TOKEN = "soubanwolf";
 
-    public final static String REDIRECT_ROOT = "http://3c31426a.ittun.com/";
+    public final static String REDIRECT_ROOT = "http://souban-kill.91souban.com/";
 
     public final static String REDIRECT_CREATEGAME = REDIRECT_ROOT +  "start";
 

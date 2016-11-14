@@ -25,7 +25,7 @@ public interface WolfMapper {
     int isGod(@Param("openId") String openId,@Param("roomId") Integer roomId);
     int isGameAvaliable(@Param("roomId") Integer roomId);
     int insertGameIdentify(@Param("gameIds") Integer[] gameIds, @Param("roomId") Integer roomId, @Param("identify") Integer identify);
-    Game getGame(@Param("roomId") Integer roomId,@Param("godId") String godId);
+    Game getGame(@Param("roomId") Integer roomId);
     GameIdentify getGameIdentify(@Param("gameId") Integer gameId, @Param("roomId") Integer roomId);
     GameIdentify getGameIdentifyByOpenId(@Param("openId") String openId, @Param("roomId") Integer roomId);
     List<GameIdentify> getIdentityList(@Param("roomId") Integer roomId);

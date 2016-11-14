@@ -9,6 +9,7 @@ import com.souban.wolf.persistence.WolfMapper;
 import com.souban.wolf.util.CommonUtil;
 import com.souban.wolf.util.JsonUtils;
 import com.souban.wolf.util.ResponseJson;
+import com.souban.wolf.util.WechatSendKFMessage;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
@@ -22,6 +23,8 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import com.souban.wolf.builder.TextBuilder;
+
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -38,7 +41,7 @@ public class MsgHandler extends AbstractHandler {
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
                                     Map<String, Object> context, WxMpService weixinService,
-                                    WxSessionManager sessionManager)    {
+                                    WxSessionManager sessionManager) {
 
         if (!wxMessage.getMsgType().equals(WxConsts.XML_MSG_EVENT)) {
             //TODO 可以选择将消息保存到本地
@@ -57,7 +60,7 @@ public class MsgHandler extends AbstractHandler {
             Integer alreadyInGame = wolfMapper.alreadyInGame(openId, roomId);
             Integer isGod = wolfMapper.isGod(openId,roomId);
             if (isGod != 0){
-                Game game = wolfMapper.getGame(roomId,openId);
+                Game game = wolfMapper.getGame(roomId);
                 message = String.format("房间号%s,你是本场游戏的法官，共12人,配置%s <a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4daccaf144b416c4&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份列表</a> ",roomId,game.getDescription(),WeixinKeyConstants.REDIRECT_IDENTIFYLIST,roomId);
             }else if (alreadyInGame != 0){
                 GameIdentify gameIdentify = wolfMapper.getGameIdentifyByOpenId(openId,roomId);
@@ -71,6 +74,10 @@ public class MsgHandler extends AbstractHandler {
                     message = "加入游戏失败";
                 }
                 GameIdentify gameIdentify = wolfMapper.getGameIdentify(userCount+1,roomId);
+                if (userCount +1 == 1){ //游戏开始 给法官推送消息
+                    Game game = wolfMapper.getGame(roomId);
+                    WechatSendKFMessage.sendKfMessage(String.format("房间号:%s,游戏开始,<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4daccaf144b416c4&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份列表</a>",roomId,WeixinKeyConstants.REDIRECT_IDENTIFYLIST,roomId),game.getGodId());
+                }
                 message = String.format("加入游戏成功，你是%s号玩家,<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4daccaf144b416c4&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份</a>",gameIdentify.getGameId(),WeixinKeyConstants.REDIRECT_GETIDENTIFY,roomId);
             }
 

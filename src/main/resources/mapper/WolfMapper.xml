@@ -55,7 +55,7 @@
     </select>
 
     <select id="getGame" resultType="com.souban.wolf.model.wolf.Game">
-        SELECT * FROM test.wolf WHERE roomId = #{roomId} AND godId = #{godId}
+        SELECT * FROM test.wolf WHERE roomId = #{roomId}
     </select>
 
     <select id="isGameAvaliable" resultType="java.lang.Integer">

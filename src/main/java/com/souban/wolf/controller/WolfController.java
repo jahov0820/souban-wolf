@@ -11,6 +11,7 @@ import com.souban.wolf.persistence.WolfMapper;
 import com.souban.wolf.util.CommonUtil;
 import com.souban.wolf.util.ResponseJson;
 import com.souban.wolf.util.ShuffleUtil;
+import com.souban.wolf.util.WechatSendKFMessage;
 import com.squareup.okhttp.FormEncodingBuilder;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
@@ -82,7 +83,6 @@ public class WolfController {
     @Autowired
     private WxMpMessageRouter router;
 
-    final OkHttpClient client = new OkHttpClient();
 
     @RequestMapping(value = "createGame",method = RequestMethod.POST)
     public ResponseJson createGame(@RequestParam(name = "openId",
@@ -119,12 +119,12 @@ public class WolfController {
         wolfMapper.insertGameIdentify(defend,game.getRoomNumber(),5);
         wolfMapper.insertGameIdentify(prophet,game.getRoomNumber(),2);
 
-        String description = String.format("%s号是狼人,%s号是村民,%s号是猎人,%s号是女巫,%s号是守卫,%s号是预言家,", Arrays.toString(wolf), Arrays.toString(villager), Arrays.toString(hunter), Arrays.toString(hag), Arrays.toString(defend), Arrays.toString(prophet));
+        String description = String.format("%s号是狼人,%s号是村民,%s号是猎人,%s号是女巫,%s号是白痴,%s号是预言家,", Arrays.toString(wolf), Arrays.toString(villager), Arrays.toString(hunter), Arrays.toString(hag), Arrays.toString(defend), Arrays.toString(prophet));
         wolfMapper.updateRoomNumber(game.getId(),game.getId() + 100,description);
         game.setDescription(description);
 
         String  message = String.format("房间号%s,你是本场游戏的法官，共12人,配置%s <a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4daccaf144b416c4&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份列表</a> ",game.getRoomNumber(),game.getDescription(),WeixinKeyConstants.REDIRECT_IDENTIFYLIST,game.getRoomNumber());
-        sendKfMessage(message,openId);
+        WechatSendKFMessage.sendKfMessage(message,openId);
 
         return new ResponseJson(1, "SUCCESS",game);
     }
@@ -135,7 +135,7 @@ public class WolfController {
     @RequestMapping(value = "joinGame",method = RequestMethod.POST)
     public ResponseJson joinGame(@RequestParam(name = "openId",
             required = true) String openId,@RequestParam(name = "roomId",
-            required = true) Integer roomId){
+            required = true) Integer roomId) throws IOException{
 
         Integer isGameAvaliable = wolfMapper.isGameAvaliable(roomId);
         if (isGameAvaliable == 0){
@@ -145,7 +145,7 @@ public class WolfController {
         Integer alreadyInGame = wolfMapper.alreadyInGame(openId, roomId);
         Integer isGod = wolfMapper.isGod(openId,roomId);
         if (isGod != 0){
-            Game game = wolfMapper.getGame(roomId,openId);
+            Game game = wolfMapper.getGame(roomId);
             return new ResponseJson(1,String.format("你是本场游戏的法官，共12人,配置%s",game.getDescription()));
         }
         if (alreadyInGame != 0){
@@ -162,6 +162,10 @@ public class WolfController {
         }
         GameIdentify gameIdentify = wolfMapper.getGameIdentify(userCount+1,roomId);
 
+        if (userCount +1 == 12){ //游戏开始 给法官推送消息
+            Game game = wolfMapper.getGame(roomId);
+            WechatSendKFMessage.sendKfMessage(String.format("房间号:%s,游戏开始",roomId),game.getGodId());
+        }
         return new ResponseJson(1, String.format("加入游戏成功，你是%s号玩家,身份是%s",userCount+1,gameIdentify.getIdentifyName()));
     }
 
@@ -197,24 +201,7 @@ public class WolfController {
 
 
 
-    private void sendKfMessage(String message,String openId) throws IOException{
-        Token token = CommonUtil.getToken(WeixinKeyConstants.APPID,WeixinKeyConstants.SECRET);
-        String url = String.format("https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=%s",token.getAccessToken());
-        Map<Object,Object> param = new HashedMap();
-        Map<Object,Object> subParam = new HashedMap();
-        subParam.put("content",message);
-        param.put("touser",openId);
-        param.put("msgtype","text");
-        param.put("text",subParam);
-        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),gson.toJson(param));
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
 
-        Response response = client.newCall(request).execute();
 
-    }
 
 }

@@ -64,8 +64,8 @@ public class WechatController {
                 @RequestParam(name = "msg_signature",
                         required = false) String msgSignature) {
 
-        Token token = CommonUtil.getToken(WeixinKeyConstants.APPID,WeixinKeyConstants.SECRET);
-        this.logger.info("token{}",token.getAccessToken());
+//        Token token = CommonUtil.getToken(WeixinKeyConstants.APPID,WeixinKeyConstants.SECRET);
+//        this.logger.info("token{}",token.getAccessToken());
         WxMpXmlMessage intoMessage = WxMpXmlMessage.fromXml(requestBody);
         WxMpXmlOutMessage outMessage = this.route(intoMessage);
         if (outMessage == null) {

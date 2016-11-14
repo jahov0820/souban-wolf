@@ -74,7 +74,7 @@ public class MsgHandler extends AbstractHandler {
                     message = "加入游戏失败";
                 }
                 GameIdentify gameIdentify = wolfMapper.getGameIdentify(userCount+1,roomId);
-                if (userCount +1 == 1){ //游戏开始 给法官推送消息
+                if (userCount +1 == 12){ //游戏开始 给法官推送消息
                     Game game = wolfMapper.getGame(roomId);
                     WechatSendKFMessage.sendKfMessage(String.format("房间号:%s,游戏开始,<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4daccaf144b416c4&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份列表</a>",roomId,WeixinKeyConstants.REDIRECT_IDENTIFYLIST,roomId),game.getGodId());
                 }

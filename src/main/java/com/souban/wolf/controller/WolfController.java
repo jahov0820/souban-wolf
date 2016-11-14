@@ -162,10 +162,10 @@ public class WolfController {
         }
         GameIdentify gameIdentify = wolfMapper.getGameIdentify(userCount+1,roomId);
 
-        if (userCount +1 == 12){ //游戏开始 给法官推送消息
-            Game game = wolfMapper.getGame(roomId);
-            WechatSendKFMessage.sendKfMessage(String.format("房间号:%s,游戏开始",roomId),game.getGodId());
-        }
+//        if (userCount +1 == 12){ //游戏开始 给法官推送消息
+//            Game game = wolfMapper.getGame(roomId);
+//            WechatSendKFMessage.sendKfMessage(String.format("房间号:%s,游戏开始",roomId),game.getGodId());
+//        }
         return new ResponseJson(1, String.format("加入游戏成功，你是%s号玩家,身份是%s",userCount+1,gameIdentify.getIdentifyName()));
     }
 

@@ -24,7 +24,7 @@
         ( #{openId}, #{roomId},#{gameId})
     </insert>
     <select id="alreadyInGame" resultType="java.lang.Integer">
-        SELECT count(id) FROM souban_wolf.user_wolf WHERE roomId = #{roomId} AND penId = #{openId}
+        SELECT count(id) FROM souban_wolf.user_wolf WHERE roomId = #{roomId} AND openId = #{openId}
     </select>
     <update id="updateRoomNumber">
         UPDATE  souban_wolf.wolf SET roomId = #{roomId} ,description = #{description} WHERE id = #{id}

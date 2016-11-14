@@ -10,27 +10,27 @@
     </insert>
 
     <select id="isWechatUserExist" resultType="java.lang.Integer">
-        SELECT count(id) FROM test.user WHERE openId = #{openId}
+        SELECT count(id) FROM souban_wolf.user WHERE openId = #{openId}
     </select>
     <insert id="createGame" useGeneratedKeys="true" keyProperty="id" parameterType="com.souban.wolf.model.wolf.Game">
-        INSERT INTO test.wolf (godId, memberCount) VALUE
+        INSERT INTO souban_wolf.wolf (godId, memberCount) VALUE
         ( #{godId}, #{memberCount})
     </insert>
     <select id="userCount" resultType="java.lang.Integer">
-        SELECT count(id) FROM test.user_wolf WHERE roomId = #{roomId}
+        SELECT count(id) FROM souban_wolf.user_wolf WHERE roomId = #{roomId}
     </select>
     <insert id="addToGame">
         INSERT INTO user_wolf (openId, roomId,gameId) VALUE
         ( #{openId}, #{roomId},#{gameId})
     </insert>
     <select id="alreadyInGame" resultType="java.lang.Integer">
-        SELECT count(id) FROM test.user_wolf WHERE roomId = #{roomId} AND openId = #{openId}
+        SELECT count(id) FROM souban_wolf.user_wolf WHERE roomId = #{roomId} AND penId = #{openId}
     </select>
     <update id="updateRoomNumber">
-        UPDATE  test.wolf SET roomId = #{roomId} ,description = #{description} WHERE id = #{id}
+        UPDATE  souban_wolf.wolf SET roomId = #{roomId} ,description = #{description} WHERE id = #{id}
     </update>
     <select id="isGod" resultType="java.lang.Integer">
-        SELECT count(id) FROM test.wolf WHERE roomId = #{roomId} AND godId = #{openId}
+        SELECT count(id) FROM souban_wolf.wolf WHERE roomId = #{roomId} AND godId = #{openId}
     </select>
 
     <insert id="insertGameIdentify">
@@ -42,29 +42,29 @@
 
 
     <select id="getGameIdentify" resultType="com.souban.wolf.model.wolf.GameIdentify">
-        SELECT wolf_identify.gameId,wolf_identify.roomId,wolf_identify.identify,identify.identifyName FROM test.wolf_identify
-         LEFT JOIN test.identify ON test.identify.id = test.wolf_identify.identify
+        SELECT wolf_identify.gameId,wolf_identify.roomId,wolf_identify.identify,identify.identifyName FROM souban_wolf.wolf_identify
+         LEFT JOIN souban_wolf.identify ON souban_wolf.identify.id = souban_wolf.wolf_identify.identify
          WHERE wolf_identify.roomId = #{roomId} AND wolf_identify.gameId = #{gameId}
     </select>
 
     <select id="getGameIdentifyByOpenId" resultType="com.souban.wolf.model.wolf.GameIdentify">
-        SELECT user_wolf.openId as openId,user_wolf.roomId as roomId,user_wolf.gameId as gameId,wolf_identify.identify as identify,identify.identifyName as identifyName FROM test.user_wolf
+        SELECT user_wolf.openId as openId,user_wolf.roomId as roomId,user_wolf.gameId as gameId,wolf_identify.identify as identify,identify.identifyName as identifyName FROM souban_wolf.user_wolf
          LEFT JOIN wolf_identify ON wolf_identify.roomId = user_wolf.roomId AND wolf_identify.roomId = user_wolf.roomId AND wolf_identify.gameId = user_wolf.gameId
          LEFT JOIN identify ON identify.id = wolf_identify.identify
          WHERE user_wolf.roomId = #{roomId} AND user_wolf.openId = #{openId}
     </select>
 
     <select id="getGame" resultType="com.souban.wolf.model.wolf.Game">
-        SELECT * FROM test.wolf WHERE roomId = #{roomId}
+        SELECT * FROM souban_wolf.wolf WHERE roomId = #{roomId}
     </select>
 
     <select id="isGameAvaliable" resultType="java.lang.Integer">
-        SELECT count(id) FROM test.wolf WHERE roomId = #{roomId}
+        SELECT count(id) FROM souban_wolf.wolf WHERE roomId = #{roomId}
     </select>
 
     <select id="getIdentityList" resultType="com.souban.wolf.model.wolf.GameIdentify">
-        SELECT user_wolf.openId,wolf_identify.gameId,wolf_identify.roomId,wolf_identify.identify,identify.identifyName,test.user.nickName,test.user.headImgUrl FROM test.user_wolf
-        LEFT JOIN test.user ON user_wolf.openId = test.user.openId
+        SELECT user_wolf.openId,wolf_identify.gameId,wolf_identify.roomId,wolf_identify.identify,identify.identifyName,souban_wolf.user.nickName,souban_wolf.user.headImgUrl FROM souban_wolf.user_wolf
+        LEFT JOIN souban_wolf.user ON user_wolf.openId = souban_wolf.user.openId
         LEFT JOIN wolf_identify ON user_wolf.gameId = wolf_identify.gameId AND user_wolf.roomId = wolf_identify.roomId
         LEFT JOIN identify ON identify.id = wolf_identify.identify
         WHERE user_wolf.roomId = #{roomId} AND  user_wolf.openId is NOT null;

@@ -81,10 +81,10 @@ public class MsgHandler extends AbstractHandler {
             Integer isGod = wolfMapper.isGod(openId,roomId);
             if (isGod != 0){
                 Game game = wolfMapper.getGame(roomId);
-                message = String.format("房间号%s,你是本场游戏的法官，共12人,配置%s <a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4daccaf144b416c4&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份列表</a> ",roomId,game.getDescription(),WeixinKeyConstants.REDIRECT_IDENTIFYLIST,roomId);
+                message = String.format("房间号%s,你是本场游戏的法官，共12人,配置%s <a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx83ae4852ed097202&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份列表</a> ",roomId,game.getDescription(),WeixinKeyConstants.REDIRECT_IDENTIFYLIST,roomId);
             }else if (alreadyInGame != 0){
                 GameIdentify gameIdentify = wolfMapper.getGameIdentifyByOpenId(openId,roomId);
-                message = String.format("你已加入游戏，你是%s号玩家,<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4daccaf144b416c4&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份</a>",gameIdentify.getGameId(),WeixinKeyConstants.REDIRECT_GETIDENTIFY,roomId);
+                message = String.format("你已加入游戏，你是%s号玩家,<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx83ae4852ed097202&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份</a>",gameIdentify.getGameId(),WeixinKeyConstants.REDIRECT_GETIDENTIFY,roomId);
             }
             else if (userCount >= 12){
                 message = "游戏已经开始或结束";
@@ -96,9 +96,9 @@ public class MsgHandler extends AbstractHandler {
                 GameIdentify gameIdentify = wolfMapper.getGameIdentify(userCount+1,roomId);
                 if (userCount +1 == 12){ //游戏开始 给法官推送消息
                     Game game = wolfMapper.getGame(roomId);
-                    WechatSendKFMessage.sendKfMessage(String.format("房间号:%s,游戏开始,<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4daccaf144b416c4&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份列表</a>",roomId,WeixinKeyConstants.REDIRECT_IDENTIFYLIST,roomId),game.getGodId());
+                    WechatSendKFMessage.sendKfMessage(String.format("房间号:%s,游戏开始,<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx83ae4852ed097202&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份列表</a>",roomId,WeixinKeyConstants.REDIRECT_IDENTIFYLIST,roomId),game.getGodId());
                 }
-                message = String.format("加入游戏成功，你是%s号玩家,<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4daccaf144b416c4&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份</a>",gameIdentify.getGameId(),WeixinKeyConstants.REDIRECT_GETIDENTIFY,roomId);
+                message = String.format("加入游戏成功，你是%s号玩家,<a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx83ae4852ed097202&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份</a>",gameIdentify.getGameId(),WeixinKeyConstants.REDIRECT_GETIDENTIFY,roomId);
             }
 
         }

@@ -13,10 +13,12 @@ import com.souban.wolf.util.WechatSendKFMessage;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.common.session.WxSessionManager;
+import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
 import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 
+import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -41,7 +43,25 @@ public class MsgHandler extends AbstractHandler {
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
                                     Map<String, Object> context, WxMpService weixinService,
-                                    WxSessionManager sessionManager) {
+                                    WxSessionManager sessionManager) throws WxErrorException  {
+
+
+        WxMpInMemoryConfigStorage config = new WxMpInMemoryConfigStorage();
+        config.setAppId(WeixinKeyConstants.APPID);
+        config.setSecret(WeixinKeyConstants.SECRET);
+        weixinService.setWxMpConfigStorage(config);
+        // 获取微信用户基本信息
+        WxMpUser userWxInfo = weixinService.getUserService()
+                .userInfo(wxMessage.getFromUser(), "zh_CN");
+
+        if (userWxInfo != null) {
+            // TODO 可以添加关注用户到本地
+            if (wolfMapper.isWechatUserExist(userWxInfo.getOpenId()) == 0){
+                wolfMapper.insertWechatUserInfo(userWxInfo.getOpenId(),userWxInfo.getHeadImgUrl(),userWxInfo.getNickname());
+            }
+        }else{
+            return new TextBuilder().build("未获取到用户信息,请重新输入房间号", wxMessage, weixinService);
+        }
 
         if (!wxMessage.getMsgType().equals(WxConsts.XML_MSG_EVENT)) {
             //TODO 可以选择将消息保存到本地

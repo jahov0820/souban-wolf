@@ -59,7 +59,7 @@ public class SubscribeHandler extends AbstractHandler {
         }
 
         try {
-            return new TextBuilder().build("这里是搜办狼人杀 加入游戏请输入房间号码", wxMessage, weixinService);
+            return new TextBuilder().build("欢迎关注搜办,加入狼人杀游戏请输入房间号", wxMessage, weixinService);
         } catch (Exception e) {
             this.logger.error(e.getMessage(), e);
         }

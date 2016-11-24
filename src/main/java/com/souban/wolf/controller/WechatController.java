@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/")
 public class WechatController {
 
-
     @Autowired
     private WolfMapper wolfMapper;
 
@@ -47,8 +46,8 @@ public class WechatController {
                              @RequestParam(name = "nonce", required = false) String nonce,
                              @RequestParam(name = "echostr", required = false) String echostr){
 
-        this.logger.info("\n接收到来自微信服务器的认证消息：[{},{},{},{}]", signature,
-                timestamp, nonce, echostr);
+
+//        this.logger.info("token{}",token.getAccessToken());
         return echostr;
     }
 

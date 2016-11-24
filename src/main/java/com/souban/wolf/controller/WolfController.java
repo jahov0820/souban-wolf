@@ -1,28 +1,18 @@
 package com.souban.wolf.controller;
 
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.souban.wolf.config.WeixinKeyConstants;
-import com.souban.wolf.model.Token;
 import com.souban.wolf.model.wolf.Game;
 import com.souban.wolf.model.wolf.GameIdentify;
 import com.souban.wolf.persistence.WolfMapper;
-import com.souban.wolf.util.CommonUtil;
 import com.souban.wolf.util.ResponseJson;
 import com.souban.wolf.util.ShuffleUtil;
 import com.souban.wolf.util.WechatSendKFMessage;
-import com.squareup.okhttp.FormEncodingBuilder;
 import me.chanjar.weixin.common.exception.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
 import me.chanjar.weixin.mp.api.WxMpMessageRouter;
 import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
-import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
-import me.chanjar.weixin.mp.bean.result.WxMpUser;
-import okhttp3.*;
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +40,7 @@ public class WolfController {
     private WolfMapper wolfMapper;
 
     @RequestMapping(value = "user_info",method = RequestMethod.POST)
-    public Map<String, Object> wolf(@RequestParam(required = false) String code, HttpServletRequest request, HttpServletResponse response,
-                       @RequestParam(required = false) String redirect, @RequestParam(required = false) String recommendToken)throws IOException, WxErrorException {
+    public Map<String, Object> wolf(@RequestParam(required = false) String code, HttpServletRequest request, HttpServletResponse response)throws IOException, WxErrorException {
 
         HttpSession session = request.getSession();
         WxMpService wxMpService = new WxMpServiceImpl();
@@ -75,7 +64,6 @@ public class WolfController {
             return map;
         }
 
-
         return null;
     }
 
@@ -87,6 +75,7 @@ public class WolfController {
     @RequestMapping(value = "createGame",method = RequestMethod.POST)
     public ResponseJson createGame(@RequestParam(name = "openId",
             required = true) String openId) throws IOException{
+
         Game game = new Game();
         game.setMemberCount(12);
         game.setGodId(openId);
@@ -97,14 +86,12 @@ public class WolfController {
         game.setRoomNumber(game.getId() + 100);
 
         Integer[] shuffle = ShuffleUtil.randomArray(1,12,12);
-
         Integer[] wolf = new Integer[4];
         Integer[] villager = new Integer[4];
         Integer[] hunter = new Integer[1];
         Integer[] hag = new Integer[1];
         Integer[] defend = new Integer[1];
         Integer[] prophet = new Integer[1];
-
         System.arraycopy(shuffle,0,wolf,0,4);
         System.arraycopy(shuffle,4,villager,0,4);
         System.arraycopy(shuffle,8,hunter,0,1);
@@ -155,17 +142,11 @@ public class WolfController {
         if (userCount >= 12){
             return new ResponseJson(0,"游戏已经开始或结束");
         }
-
         int  succress = wolfMapper.addToGame(openId,roomId,userCount+1);
         if (succress != 1){
             return new ResponseJson(0,"加入游戏失败");
         }
         GameIdentify gameIdentify = wolfMapper.getGameIdentify(userCount+1,roomId);
-
-//        if (userCount +1 == 12){ //游戏开始 给法官推送消息
-//            Game game = wolfMapper.getGame(roomId);
-//            WechatSendKFMessage.sendKfMessage(String.format("房间号:%s,游戏开始",roomId),game.getGodId());
-//        }
         return new ResponseJson(1, String.format("加入游戏成功，你是%s号玩家,身份是%s",userCount+1,gameIdentify.getIdentifyName()));
     }
 
@@ -180,9 +161,7 @@ public class WolfController {
             return new ResponseJson(1,"只有法官才能查看配置");
         }
         List<GameIdentify> identifyList = wolfMapper.getIdentityList(roomId);
-
         return new ResponseJson(1, "success",identifyList);
-
     }
 
 
@@ -199,8 +178,13 @@ public class WolfController {
     }
 
 
+    @RequestMapping(value = "roleAssign",method = RequestMethod.POST)
+    public ResponseJson roleAssign(@RequestParam(name = "openId",
+            required = true) String openId){
 
 
+        return new ResponseJson(0, "fail");
+    }
 
 
 

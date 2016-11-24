@@ -4,11 +4,11 @@ package com.souban.wolf.config;
  * Created by Apple on 11/10/16.
  */
 public class WeixinKeyConstants {
-    public final static String APPID = "wx4daccaf144b416c4";
+    public final static String APPID = "wx83ae4852ed097202";
 
-    public final static String SECRET = "997e4ad2544e6a259c3ff2bb1ee5aae6";
+    public final static String SECRET = "c12653c4ce9763cbe51775ea21bb692b";
 
-    public final static String TOKEN = "soubanwolf";
+    public final static String TOKEN = "souban";
 
     public final static String REDIRECT_ROOT = "http://souban-kill.91souban.com/";
 

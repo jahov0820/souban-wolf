@@ -157,10 +157,14 @@ public class WolfController {
             required = true) String openId,@RequestParam(name = "roomId",
             required = true) Integer roomId){
         Integer isGod = wolfMapper.isGod(openId,roomId);
-        if (isGod == 0){
-            return new ResponseJson(1,"只有法官才能查看配置");
-        }
         List<GameIdentify> identifyList = wolfMapper.getIdentityList(roomId);
+
+        if (isGod == 0){
+            for (GameIdentify gameIdentify : identifyList) {
+                gameIdentify.setIdentifyName("xxx");
+            }
+            return new ResponseJson(1, "success",identifyList);
+        }
         return new ResponseJson(1, "success",identifyList);
     }
 

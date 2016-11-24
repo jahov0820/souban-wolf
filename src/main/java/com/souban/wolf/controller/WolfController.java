@@ -110,7 +110,7 @@ public class WolfController {
         wolfMapper.updateRoomNumber(game.getId(),game.getId() + 100,description);
         game.setDescription(description);
 
-        String  message = String.format("房间号%s,你是本场游戏的法官，共12人,配置%s <a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4daccaf144b416c4&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份列表</a> ",game.getRoomNumber(),game.getDescription(),WeixinKeyConstants.REDIRECT_IDENTIFYLIST,game.getRoomNumber());
+        String  message = String.format("房间号%s,你是本场游戏的法官，共12人,配置%s <a href='https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s?roomId=%s&response_type=code&scope=snsapi_base&state=State#wechat_redirect'>点击查看身份列表</a> ",game.getRoomNumber(),game.getDescription(),WeixinKeyConstants.APPID,WeixinKeyConstants.REDIRECT_IDENTIFYLIST,game.getRoomNumber());
         WechatSendKFMessage.sendKfMessage(message,openId);
 
         return new ResponseJson(1, "SUCCESS",game);

@@ -44,7 +44,7 @@ public class SubscribeHandler extends AbstractHandler {
         if (userWxInfo != null) {
             // TODO 可以添加关注用户到本地
             if (wolfMapper.isWechatUserExist(userWxInfo.getOpenId()) == 0){
-                wolfMapper.insertWechatUserInfo(userWxInfo.getOpenId(),userWxInfo.getHeadImgUrl(),userWxInfo.getNickname());
+                wolfMapper.insertWechatUserInfo(userWxInfo.getOpenId(),userWxInfo.getHeadImgUrl(),"");
             }
         }
         WxMpXmlOutMessage responseResult = null;

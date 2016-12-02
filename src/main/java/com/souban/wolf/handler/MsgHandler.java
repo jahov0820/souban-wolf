@@ -57,7 +57,7 @@ public class MsgHandler extends AbstractHandler {
         if (userWxInfo != null) {
             // TODO 可以添加关注用户到本地
             if (wolfMapper.isWechatUserExist(userWxInfo.getOpenId()) == 0){
-                wolfMapper.insertWechatUserInfo(userWxInfo.getOpenId(),userWxInfo.getHeadImgUrl(),userWxInfo.getNickname());
+                wolfMapper.insertWechatUserInfo(userWxInfo.getOpenId(),userWxInfo.getHeadImgUrl(),"");
             }
         }else{
             return new TextBuilder().build("未获取到用户信息,请重新输入房间号", wxMessage, weixinService);

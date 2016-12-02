@@ -67,7 +67,7 @@
         LEFT JOIN souban_wolf.user ON user_wolf.openId = souban_wolf.user.openId
         LEFT JOIN wolf_identify ON user_wolf.gameId = wolf_identify.gameId AND user_wolf.roomId = wolf_identify.roomId
         LEFT JOIN identify ON identify.id = wolf_identify.identify
-        WHERE user_wolf.roomId = #{roomId} AND  user_wolf.openId is NOT null;
+        WHERE user_wolf.roomId = #{roomId} AND  user_wolf.openId is NOT null order by gameId;
     </select>
 </mapper>
 

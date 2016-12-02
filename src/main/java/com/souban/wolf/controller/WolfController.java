@@ -163,7 +163,16 @@ public class WolfController {
         if (isGod == 0){
             for (GameIdentify gameIdentify : identifyList) {
                 gameIdentify.setIdentifyName("xxx");
+                try {
+                    String nickName = URLDecoder.decode(gameIdentify.getNickName(), "utf-8") ;
+                    if (nickName != null){
+                        gameIdentify.setNickName(nickName);
+                    }
+                }catch (Exception e){
+
+                }
             }
+
             return new ResponseJson(1, "success",identifyList);
         }else{
             for (GameIdentify gameIdentify : identifyList) {

@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import com.souban.wolf.builder.TextBuilder;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Map;
 
 /**
@@ -56,8 +57,16 @@ public class MsgHandler extends AbstractHandler {
 
         if (userWxInfo != null) {
             // TODO 可以添加关注用户到本地
+
             if (wolfMapper.isWechatUserExist(userWxInfo.getOpenId()) == 0){
-                wolfMapper.insertWechatUserInfo(userWxInfo.getOpenId(),userWxInfo.getHeadImgUrl(),"");
+                try {
+                    String name = URLEncoder.encode(userWxInfo.getNickname(), "utf-8");
+                    if (name != null){
+                        wolfMapper.insertWechatUserInfo(userWxInfo.getOpenId(),userWxInfo.getHeadImgUrl(),name);
+                    }
+                }catch (Exception e){
+
+                }
             }
         }else{
             return new TextBuilder().build("未获取到用户信息,请重新输入房间号", wxMessage, weixinService);

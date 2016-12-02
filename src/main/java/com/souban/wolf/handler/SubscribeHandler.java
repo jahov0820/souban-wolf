@@ -14,6 +14,8 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import com.souban.wolf.builder.TextBuilder;
+
+import java.net.URLEncoder;
 import java.util.Map;
 
 /**
@@ -44,7 +46,15 @@ public class SubscribeHandler extends AbstractHandler {
         if (userWxInfo != null) {
             // TODO 可以添加关注用户到本地
             if (wolfMapper.isWechatUserExist(userWxInfo.getOpenId()) == 0){
-                wolfMapper.insertWechatUserInfo(userWxInfo.getOpenId(),userWxInfo.getHeadImgUrl(),"");
+                try {
+                    String name = URLEncoder.encode(userWxInfo.getNickname(), "utf-8");
+                    if (name != null){
+                        wolfMapper.insertWechatUserInfo(userWxInfo.getOpenId(),userWxInfo.getHeadImgUrl(),name);
+                    }
+                }catch (Exception e){
+
+                }
+
             }
         }
         WxMpXmlOutMessage responseResult = null;

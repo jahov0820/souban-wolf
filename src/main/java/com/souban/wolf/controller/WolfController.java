@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.*;
 
 /**
@@ -164,6 +165,18 @@ public class WolfController {
                 gameIdentify.setIdentifyName("xxx");
             }
             return new ResponseJson(1, "success",identifyList);
+        }else{
+            for (GameIdentify gameIdentify : identifyList) {
+                try {
+                    String nickName = URLDecoder.decode(gameIdentify.getNickName(), "utf-8") ;
+                    if (nickName != null){
+                        gameIdentify.setNickName(nickName);
+                    }
+                }catch (Exception e){
+
+                }
+            }
+
         }
         return new ResponseJson(1, "success",identifyList);
     }
@@ -175,7 +188,16 @@ public class WolfController {
             required = true) String openId,@RequestParam(name = "roomId",
             required = true) Integer roomId){
         GameIdentify gameIdentify = wolfMapper.getGameIdentifyByOpenId(openId,roomId);
+
         if (gameIdentify != null){
+            try {
+                String nickName = URLDecoder.decode(gameIdentify.getNickName(), "utf-8") ;
+                if (nickName != null){
+                    gameIdentify.setNickName(nickName);
+                }
+            }catch (Exception e){
+
+            }
             return new ResponseJson(1, "success",gameIdentify);
         }
         return new ResponseJson(0, "fail");
